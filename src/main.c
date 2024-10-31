@@ -1,88 +1,70 @@
-/**
- * main.h
- * Created on Aug, 23th 2023
- * Author: Tiago Barros
- * Based on "From C to C++ course - 2002"
-*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-#include <string.h>
+#define LINHAS 10
+#define COLUNAS 10
 
-#include "screen.h"
-#include "keyboard.h"
-#include "timer.h"
+typedef struct {
+    int x, y;
+} Posicao;
 
-int x = 34, y = 12;
-int incX = 1, incY = 1;
+void inicializar_mapa(char mapa[LINHAS][COLUNAS], Posicao *jogador, Posicao *monstro) {
+    for (int i = 0; i < LINHAS; i++)
+        for (int j = 0; j < COLUNAS; j++)
+            mapa[i][j] = '.';
 
-void printHello(int nextX, int nextY)
-{
-    screenSetColor(CYAN, DARKGRAY);
-    screenGotoxy(x, y);
-    printf("           ");
-    x = nextX;
-    y = nextY;
-    screenGotoxy(x, y);
-    printf("Hello World");
+    jogador->x = rand() % LINHAS;
+    jogador->y = rand() % COLUNAS;
+    mapa[jogador->x][jogador->y] = 'J';
+
+    monstro->x = rand() % LINHAS;
+    monstro->y = rand() % COLUNAS;
+    while (monstro->x == jogador->x && monstro->y == jogador->y) {
+        monstro->x = rand() % LINHAS;
+        monstro->y = rand() % COLUNAS;
+    }
+    mapa[monstro->x][monstro->y] = 'M';
 }
 
-void printKey(int ch)
-{
-    screenSetColor(YELLOW, DARKGRAY);
-    screenGotoxy(35, 22);
-    printf("Key code :");
+void exibir_mapa(char mapa[LINHAS][COLUNAS]) {
+    for (int i = 0; i < LINHAS; i++) {
+        for (int j = 0; j < COLUNAS; j++)
+            printf("%c ", mapa[i][j]);
+        printf("\n");
+    }
+}
 
-    screenGotoxy(34, 23);
-    printf("            ");
+void mover_jogador(char mapa[LINHAS][COLUNAS], Posicao *jogador, char direcao) {
+    mapa[jogador->x][jogador->y] = '.';
+    if (direcao == 'w' && jogador->x > 0) jogador->x--;
+    else if (direcao == 's' && jogador->x < LINHAS - 1) jogador->x++;
+    else if (direcao == 'a' && jogador->y > 0) jogador->y--;
+    else if (direcao == 'd' && jogador->y < COLUNAS - 1) jogador->y++;
     
-    if (ch == 27) screenGotoxy(36, 23);
-    else screenGotoxy(39, 23);
-
-    printf("%d ", ch);
-    while (keyhit())
-    {
-        printf("%d ", readch());
-    }
+    mapa[jogador->x][jogador->y] = 'J';
 }
 
-int main() 
-{
-    static int ch = 0;
+int main() {
+    char mapa[LINHAS][COLUNAS];
+    Posicao jogador, monstro;
+    srand(time(NULL));
 
-    screenInit(1);
-    keyboardInit();
-    timerInit(50);
+    inicializar_mapa(mapa, &jogador, &monstro);
+    char direcao;
 
-    printHello(x, y);
-    screenUpdate();
-
-    while (ch != 10) //enter
-    {
-        // Handle user input
-        if (keyhit()) 
-        {
-            ch = readch();
-            printKey(ch);
-            screenUpdate();
-        }
-
-        // Update game state (move elements, verify collision, etc)
-        if (timerTimeOver() == 1)
-        {
-            int newX = x + incX;
-            if (newX >= (MAXX -strlen("Hello World") -1) || newX <= MINX+1) incX = -incX;
-            int newY = y + incY;
-            if (newY >= MAXY-1 || newY <= MINY+1) incY = -incY;
-
-            printKey(ch);
-            printHello(newX, newY);
-
-            screenUpdate();
+    while (1) {
+        exibir_mapa(mapa);
+        printf("Mover (w/a/s/d): ");
+        scanf(" %c", &direcao);
+        
+        mover_jogador(mapa, &jogador, direcao);
+        
+        if (jogador.x == monstro.x && jogador.y == monstro.y) {
+            printf("Você encontrou o monstro!\n");
+            inicializar_mapa(mapa, &jogador, &monstro);  // Reposiciona o monstro
         }
     }
-
-    keyboardDestroy();
-    screenDestroy();
-    timerDestroy();
 
     return 0;
 }
