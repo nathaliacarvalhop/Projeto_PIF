@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "cli-lib.h"
 
 #define LINHAS 10
 #define COLUNAS 10
@@ -45,10 +46,27 @@ void mover_jogador(char mapa[LINHAS][COLUNAS], Posicao *jogador, char direcao) {
     mapa[jogador->x][jogador->y] = 'J';
 }
 
-int main() {
+void show_help() {
+    printf("Uso: jogo [opções]\n");
+    printf("Opções:\n");
+    printf("  -h, --help       Exibir esta ajuda\n");
+    printf("  -v, --version    Exibir a versão do jogo\n");
+}
+
+int main(int argc, char *argv[]) {
     char mapa[LINHAS][COLUNAS];
     Posicao jogador, monstro;
     srand(time(NULL));
+
+    struct cli_lib_context ctx;
+    cli_lib_init(&ctx, "jogo");
+    cli_lib_add_option(&ctx, "help", 'h', CLI_LIB_NO_ARG, show_help);
+    cli_lib_add_option(&ctx, "version", 'v', CLI_LIB_NO_ARG, []() {
+        printf("Versão: 1.0.0\n");
+        exit(0);
+    });
+
+    cli_lib_parse(&ctx, argc, argv);
 
     inicializar_mapa(mapa, &jogador, &monstro);
     char direcao;
@@ -62,7 +80,7 @@ int main() {
         
         if (jogador.x == monstro.x && jogador.y == monstro.y) {
             printf("Você encontrou o monstro!\n");
-            inicializar_mapa(mapa, &jogador, &monstro);  // Reposiciona o monstro
+            inicializar_mapa(mapa, &jogador, &monstro);
         }
     }
 
