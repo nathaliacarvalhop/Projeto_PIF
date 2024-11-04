@@ -1,88 +1,133 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "cli-lib.h"
+#include "timer.h"
+#include "screen.h"
+#include "keyboard.h"
+#include "config.h"
 
 #define LINHAS 10
 #define COLUNAS 10
+#define VIDA_INICIAL 100
+#define ATAQUE_JOGADOR 10
+#define ATAQUE_MONSTRO 10
 
 typedef struct {
     int x, y;
 } Posicao;
 
-void inicializar_mapa(char mapa[LINHAS][COLUNAS], Posicao *jogador, Posicao *monstro) {
+typedef struct {
+    int vida;
+    Posicao posicao;
+} Jogador;
+
+typedef struct {
+    int vida;
+    Posicao posicao;
+} Inimigo;
+
+void inicializar_mapa(char mapa[LINHAS][COLUNAS], Jogador *jogador, Inimigo *monstro) {
     for (int i = 0; i < LINHAS; i++)
         for (int j = 0; j < COLUNAS; j++)
             mapa[i][j] = '.';
 
-    jogador->x = rand() % LINHAS;
-    jogador->y = rand() % COLUNAS;
-    mapa[jogador->x][jogador->y] = 'J';
+    jogador->posicao.x = rand() % LINHAS;
+    jogador->posicao.y = rand() % COLUNAS;
+    mapa[jogador->posicao.x][jogador->posicao.y] = 'J';
 
-    monstro->x = rand() % LINHAS;
-    monstro->y = rand() % COLUNAS;
-    while (monstro->x == jogador->x && monstro->y == jogador->y) {
-        monstro->x = rand() % LINHAS;
-        monstro->y = rand() % COLUNAS;
+    monstro->posicao.x = rand() % LINHAS;
+    monstro->posicao.y = rand() % COLUNAS;
+    while (monstro->posicao.x == jogador->posicao.x && monstro->posicao.y == jogador->posicao.y) {
+        monstro->posicao.x = rand() % LINHAS;
+        monstro->posicao.y = rand() % COLUNAS;
     }
-    mapa[monstro->x][monstro->y] = 'M';
+    monstro->vida = 30;  // Exemplo de vida do monstro
+    mapa[monstro->posicao.x][monstro->posicao.y] = 'M';
 }
 
-void exibir_mapa(char mapa[LINHAS][COLUNAS]) {
+void exibir_mapa(char mapa[LINHAS][COLUNAS], Jogador *jogador) {
+    screenClear();
     for (int i = 0; i < LINHAS; i++) {
         for (int j = 0; j < COLUNAS; j++)
             printf("%c ", mapa[i][j]);
         printf("\n");
     }
+    printf("Vida do Jogador: %d\n", jogador->vida);
+    screenUpdate();
 }
 
-void mover_jogador(char mapa[LINHAS][COLUNAS], Posicao *jogador, char direcao) {
-    mapa[jogador->x][jogador->y] = '.';
-    if (direcao == 'w' && jogador->x > 0) jogador->x--;
-    else if (direcao == 's' && jogador->x < LINHAS - 1) jogador->x++;
-    else if (direcao == 'a' && jogador->y > 0) jogador->y--;
-    else if (direcao == 'd' && jogador->y < COLUNAS - 1) jogador->y++;
-    
-    mapa[jogador->x][jogador->y] = 'J';
+void mover_jogador(char mapa[LINHAS][COLUNAS], Jogador *jogador, char direcao) {
+    mapa[jogador->posicao.x][jogador->posicao.y] = '.';
+    if (direcao == 'w' && jogador->posicao.x > 0) jogador->posicao.x--;
+    else if (direcao == 's' && jogador->posicao.x < LINHAS - 1) jogador->posicao.x++;
+    else if (direcao == 'a' && jogador->posicao.y > 0) jogador->posicao.y--;
+    else if (direcao == 'd' && jogador->posicao.y < COLUNAS - 1) jogador->posicao.y++;
+
+    mapa[jogador->posicao.x][jogador->posicao.y] = 'J';
 }
 
-void show_help() {
-    printf("Uso: jogo [opções]\n");
-    printf("Opções:\n");
-    printf("  -h, --help       Exibir esta ajuda\n");
-    printf("  -v, --version    Exibir a versão do jogo\n");
+void combate(Jogador *jogador, Inimigo *monstro) {
+    while (jogador->vida > 0 && monstro->vida > 0) {
+        printf("Você encontrou um monstro! (Vida do monstro: %d)\n", monstro->vida);
+        printf("Escolha: (f) Lutar, (e) Escapar: ");
+        char escolha;
+        scanf(" %c", &escolha);
+
+        if (escolha == 'f') {
+            monstro->vida -= ATAQUE_JOGADOR;
+            printf("Você atacou o monstro! (Vida do monstro: %d)\n", monstro->vida);
+            if (monstro->vida > 0) {
+                jogador->vida -= ATAQUE_MONSTRO;
+                printf("O monstro atacou você! (Vida do jogador: %d)\n", jogador->vida);
+            }
+        } else if (escolha == 'e') {
+            printf("Você tentou escapar!\n");
+            break; // Sai do combate
+        }
+
+        if (jogador->vida <= 0) {
+            printf("Você foi derrotado!\n");
+            exit(0);
+        }
+    }
 }
 
 int main(int argc, char *argv[]) {
     char mapa[LINHAS][COLUNAS];
-    Posicao jogador, monstro;
+    Jogador jogador = {VIDA_INICIAL};
+    Inimigo monstro;
     srand(time(NULL));
 
-    struct cli_lib_context ctx;
-    cli_lib_init(&ctx, "jogo");
-    cli_lib_add_option(&ctx, "help", 'h', CLI_LIB_NO_ARG, show_help);
-    cli_lib_add_option(&ctx, "version", 'v', CLI_LIB_NO_ARG, []() {
-        printf("Versão: 1.0.0\n");
-        exit(0);
-    });
-
-    cli_lib_parse(&ctx, argc, argv);
+    keyboardInit();
+    screenInit(1);
+    timerInit(100);
 
     inicializar_mapa(mapa, &jogador, &monstro);
     char direcao;
 
     while (1) {
-        exibir_mapa(mapa);
+        exibir_mapa(mapa, &jogador);
         printf("Mover (w/a/s/d): ");
-        scanf(" %c", &direcao);
+
+        while (!keyhit()) {}
+        direcao = readch();
         
         mover_jogador(mapa, &jogador, direcao);
-        
-        if (jogador.x == monstro.x && jogador.y == monstro.y) {
-            printf("Você encontrou o monstro!\n");
+
+        if (jogador.posicao.x == monstro.posicao.x && jogador.posicao.y == monstro.posicao.y) {
+            combate(&jogador, &monstro);
             inicializar_mapa(mapa, &jogador, &monstro);
         }
+
+        if (jogador.vida <= 0) {
+            printf("Você morreu. Fim do jogo!\n");
+            break;
+        }
     }
+
+    timerDestroy();
+    keyboardDestroy();
+    screenDestroy();
 
     return 0;
 }

@@ -4,6 +4,8 @@
 typedef struct {
     int health;
     int attack;
+    int x;
+    int y;
 } Player;
 
 void initializePlayer(Player *player);
