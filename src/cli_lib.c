@@ -44,7 +44,7 @@ void printKey(int ch)
     }
 }
 
-int main() 
+int cliMain() 
 {
     static int ch = 0;
 
