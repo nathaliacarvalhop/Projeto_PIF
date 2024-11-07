@@ -36,6 +36,7 @@ Dungeon Explorer é um jogo de exploração em modo texto onde o jogador se aven
 - Direcione a pasta:
 ```bash
 cd ../main/Projeto_PIF/build
+´´´
 
 - Execute o jogo:
 ```bash
