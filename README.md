@@ -17,7 +17,7 @@ Instituição de ensino: CESAR School.
 
 ## Mecânica do Jogo
 
-Dungeon Explorer é um jogo de exploração em modo texto onde o jogador se aventura em uma masmorra cheia de inimigos. O objetivo é sobreviver enquanto explora e tenta encontrar a saída. O jogador tem um valor de vida e ataque e pode sofrer danos ao encontrar inimigos. A cada encontro, o jogador pode decidir enfrentar ou tentar escapar. Cada decisão afeta o progresso e a sobrevivência do jogador.
+Dungeon Explorer é um jogo de exploração em modo texto onde o jogador se aventura em uma masmorra cheia de inimigos. O objetivo é sobreviver enquanto procura a saída. O jogador possui um valor de vida e pode sofrer dano ao lutar com inimigos. O jogador possui a decisão de escapar ou enfrentar ao encontrar um inimigo e cada decisão pode afetar sua sobrevivência.
 
 ### Elementos Principais da Mecânica:
 
@@ -35,7 +35,7 @@ Dungeon Explorer é um jogo de exploração em modo texto onde o jogador se aven
 
 - Direcione a pasta:
 ```bash
-cd ../main/Projeto_PIF/build
+cd ../Projeto_PIF/build
 ```
 
 - Execute o jogo:
