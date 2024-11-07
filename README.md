@@ -31,10 +31,14 @@ Dungeon Explorer é um jogo de exploração em modo texto onde o jogador se aven
 
 - **Fim de Jogo**: O jogo termina quando o jogador encontra a saída ou quando sua vida chega a zero.
 
-## Compilação e Execução
+## Executando o jogo
 
-Compile o projeto com o comando:
-
+- Direcione a pasta:
 ```bash
-gcc src/*.c -o DungeonExplorer
+cd ../main/Projeto_PIF/build
+
+- Execute o jogo:
+```bash
+./DungeonExplorer
+
 
