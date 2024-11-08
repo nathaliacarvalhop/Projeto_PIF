@@ -29,13 +29,16 @@ Dungeon Explorer é um jogo de exploração em modo texto onde o jogador se aven
   - **a**: Mover para a esquerda.
   - **d**: Mover para a direita.
 
+## Pontuação do jogo:
+- A cada inimigo enfrentado o jogado recebe uma pontuação
+- Ao encontrar uma saída o jogador deve decidir se irá fugir ou continuar explorando a caverna em busca de mais monstros
 - **Fim de Jogo**: O jogo termina quando o jogador encontra a saída ou quando sua vida chega a zero.
 
 ## Executando o jogo
 
 - Direcione a pasta:
 ```bash
-cd ../Projeto_PIF/build
+cd /Projeto_PIF/build
 ```
 
 - Execute o jogo:
