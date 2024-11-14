@@ -28,6 +28,7 @@ Dungeon Explorer é um jogo de exploração em modo texto onde o jogador se aven
   - **s**: Mover para baixo.
   - **a**: Mover para a esquerda.
   - **d**: Mover para a direita.
+  
 
 ## Pontuação do jogo:
 - A cada inimigo enfrentado o jogado recebe uma pontuação
@@ -44,5 +45,12 @@ cd /Projeto_PIF/build
 - Execute o jogo:
 ```bash
 ./DungeonExplorer
+```
+
+### Para compilar uma versão mais atualizada
+```bash
+gcc src/*.c -I include -o DungeonExplorer
+./DungeonExplorer
+```
 
 
