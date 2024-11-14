@@ -37,18 +37,27 @@ Dungeon Explorer é um jogo de exploração em modo texto onde o jogador se aven
 
 ## Executando o jogo
 
-- Direcione a pasta:
+- Faça um clone desta página:
+```bash
+git clone https://github.com/nathaliacarvalhop/Projeto_PIF.git
+```
+
+- Direcione até a pasta cujo foi instalado o arquivo:
 ```bash
 cd ../Projeto_PIF/build
 ```
 
-- Execute o jogo:
+- Execute o jogo dentro do build:
 ```bash
 ./DungeonExplorer
 ```
 
 ### Para compilar uma versão mais atualizada
+- Direcione a pasta
+- Compile o novo executável
+- Execute o arquivo
 ```bash
+cd ../Projeto_PIF/build
 gcc src/*.c -I include -o DungeonExplorer
 ./DungeonExplorer
 ```
