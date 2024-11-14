@@ -82,7 +82,7 @@ void exibir_mapa(char mapa[LINHAS][COLUNAS], Jogador *jogador, Saida *saida) {
     printf("\nVida do Jogador: %d \nPontos: %d\n", jogador->vida, jogador->pontos);
 
     if (saida->visivel) {
-        printf("Você encontrou uma saída! (Posição: %d,%d)\n", saida->posicao.x, saida->posicao.y);
+        printf("Você percebe uma luz estranha... é a saída! (Posição: %d,%d)\n", saida->posicao.x, saida->posicao.y);
     }
 
     screenUpdate();
@@ -100,8 +100,8 @@ void mover_jogador(char mapa[LINHAS][COLUNAS], Jogador *jogador, char direcao) {
 
 void combate(Jogador *jogador, Inimigo *monstro) {
     while (jogador->vida > 0 && monstro->vida > 0) {
-        printf("Você encontrou um monstro! (Vida do monstro: %d)\n", monstro->vida);
-        printf("Escolha: (f) Lutar, (e) Escapar: ");
+        printf("Um monstro surgiu das sombras! (Vida do monstro: %d)\n", monstro->vida);
+        printf("Você decide: (f) Lutar, (e) Escapar ");
         char escolha;
         scanf(" %c", &escolha);
 
@@ -123,7 +123,7 @@ void combate(Jogador *jogador, Inimigo *monstro) {
         }
 
         if (jogador->vida <= 0) {
-            printf("Você foi derrotado!\nGAME OVER\nPontuação final: %d pontos.\n", jogador->pontos);
+            printf("Você foi derrotado...\nGAME OVER\nPontuação final: %d pontos.\n", jogador->pontos);
             exit(0);
         }
     }
@@ -136,11 +136,11 @@ void verificar_saida(Jogador *jogador, Saida *saida) {
 
         char escolha;
         do {
-            printf("Escolha: (f) Fugir, (c) Continuar explorando: ");
+            printf("(f) Fugir, (e) Explorar mais: ");
             scanf(" %c", &escolha);
 
             if (escolha == 'f') {
-                printf("Você fugiu da dungeon!\n");
+                printf("Você fugiu da caverna!\n");
                 printf("GAME OVER\nPontuação final: %d pontos.\n", jogador->pontos);
                 exit(0);
             } else if (escolha == 'c') {
@@ -183,7 +183,7 @@ int main(int argc, char *argv[]) {
         verificar_saida(&jogador, &saida);
 
         if (jogador.vida <= 0) {
-            printf("Você morreu. \nGAME OVER \nPontuação final: %d pontos.\n", jogador.pontos);
+            printf("Você morreu... \nGAME OVER \nPontuação final: %d pontos.\n", jogador.pontos);
             break;
         }
     }
